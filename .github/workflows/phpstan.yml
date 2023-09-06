@@ -17,6 +17,7 @@ on:
       - 'composer.*'
       - 'phpstan*'
       - '.github/workflows/phpstan.yml'
+  workflow_call:
 
 jobs:
   build:

@@ -17,6 +17,7 @@ on:
       - 'composer.*'
       - 'phpunit*'
       - '.github/workflows/phpunit.yml'
+  workflow_call:
 
 jobs:
   main:

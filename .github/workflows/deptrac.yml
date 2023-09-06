@@ -17,6 +17,7 @@ on:
       - 'composer.*'
       - 'depfile.yaml'
       - '.github/workflows/deptrac.yml'
+  workflow_call:
 
 jobs:
   build:

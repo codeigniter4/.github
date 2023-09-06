@@ -17,6 +17,7 @@ on:
       - 'composer.*'
       - 'rector.php'
       - '.github/workflows/rector.yml'
+  workflow_call:
 
 jobs:
   build:
