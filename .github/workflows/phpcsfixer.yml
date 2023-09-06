@@ -16,9 +16,13 @@ on:
 
 jobs:
   build:
-    name: Coding Standards
+    name: PHP ${{ matrix.php-versions }} Coding Standards
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[ci skip]')"
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['7.4', '8.2']
 
     steps:
       - name: Checkout
@@ -27,7 +31,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: ${{ matrix.php-versions }}
           extensions: json, tokenizer
           coverage: none
         env:
