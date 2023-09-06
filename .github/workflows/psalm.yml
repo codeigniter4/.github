@@ -17,6 +17,7 @@ on:
       - 'composer.*'
       - 'psalm*'
       - '.github/workflows/psalm.yml'
+  workflow_call:
 
 jobs:
   build:

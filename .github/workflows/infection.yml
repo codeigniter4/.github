@@ -9,6 +9,7 @@ on:
       - 'composer.*'
       - 'phpunit*'
       - '.github/workflows/infection.yml'
+  workflow_call:
 
 jobs:
   main:
