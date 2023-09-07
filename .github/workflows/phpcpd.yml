@@ -34,4 +34,4 @@ jobs:
           coverage: none
 
       - name: Detect duplicate code
-        run: phpcpd src/ tests/
+        run: phpcpd ${{ inputs.dirs }} ${{ inputs.options }}
