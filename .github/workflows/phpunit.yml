@@ -1,3 +1,4 @@
+# This workflow runs tests on all databases supported by CI4.
 name: PHPUnit
 
 on:
