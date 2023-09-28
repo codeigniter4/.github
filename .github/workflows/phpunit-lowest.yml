@@ -1,5 +1,5 @@
-# This workflow is for packages without database testing.
-name: PHPUnit
+# This workflow runs tests on MySQLi with the lowest PHP version and Composer dependencies.
+name: PHPUnit Lowest
 
 on:
   pull_request:
@@ -29,13 +29,25 @@ permissions:
 
 jobs:
   main:
-    name: PHP ${{ matrix.php-versions }} Unit Tests
+    name: PHP ${{ matrix.php-versions }} - ${{ matrix.db-platforms }} - ${{ matrix.dependencies }}
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[ci skip]')"
     strategy:
       matrix:
-        php-versions: ['7.4', '8.0', '8.1', '8.2']
-        dependencies: ['highest', 'lowest']
+        php-versions: ['7.4']
+        db-platforms: ['MySQLi']
+        mysql-versions: ['5.7']
+        dependencies: ['lowest']
+
+    services:
+      mysql:
+        image: mysql:${{ matrix.mysql-versions }}
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Check disk space
@@ -61,8 +73,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.COMPOSER_CACHE_FILES_DIR }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+          key: ${{ runner.os }}-composer-lowest-${{ hashFiles('**/composer.json') }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-lowest-
 
       - name: Install dependencies
         run: |
@@ -77,28 +89,6 @@ jobs:
       - name: Test with PHPUnit
         run: vendor/bin/phpunit --verbose --coverage-text --testsuite main
         env:
+          DB: ${{ matrix.db-platforms }}
           TERM: xterm-256color
           TACHYCARDIA_MONITOR_GA: enabled
-
-      - if: matrix.php-versions == '8.1'
-        name: Run Coveralls
-        continue-on-error: true
-        run: |
-          sudo phive --no-progress install --global --trust-gpg-keys E82B2FB314E9906E php-coveralls
-          php-coveralls --verbose --coverage_clover=build/phpunit/clover.xml --json_path build/phpunit/coveralls-upload.json
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_PARALLEL: true
-          COVERALLS_FLAG_NAME: PHP ${{ matrix.php-versions }}
-
-  coveralls:
-    needs: [main]
-    name: Coveralls Finished
-    runs-on: ubuntu-latest
-    steps:
-      - name: Upload Coveralls results
-        uses: coverallsapp/github-action@master
-        continue-on-error: true
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel-finished: true
