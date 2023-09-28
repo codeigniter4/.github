@@ -38,6 +38,9 @@ jobs:
         dependencies: ['highest', 'lowest']
 
     steps:
+      - name: Check disk space
+        run: df -h
+
       - name: Checkout
         uses: actions/checkout@v4
 
