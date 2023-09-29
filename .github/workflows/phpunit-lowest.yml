@@ -9,7 +9,7 @@ on:
       - '**.php'
       - 'composer.*'
       - 'phpunit*'
-      - '.github/workflows/phpunit.yml'
+      - '.github/workflows/phpunit-lowest.yml'
   push:
     branches:
       - develop
@@ -17,7 +17,7 @@ on:
       - '**.php'
       - 'composer.*'
       - 'phpunit*'
-      - '.github/workflows/phpunit.yml'
+      - '.github/workflows/phpunit-lowest.yml'
   workflow_call:
 
 concurrency:
