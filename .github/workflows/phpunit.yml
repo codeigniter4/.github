@@ -42,25 +42,25 @@ jobs:
       matrix:
         php-versions: ['7.4', '8.0', '8.1', '8.2', '8.3']
         db-platforms: ['MySQLi', 'SQLite3']
-        mysql-versions: ['5.7']
+        mysql-versions: ['8.0']
         dependencies: ['highest']
         include:
-          # MySQL 8.0
+          # MySQL 5.7
           - php-versions: '7.4'
             db-platforms: MySQLi
-            mysql-versions: '8.0'
+            mysql-versions: '5.7'
           # Postgre
           - php-versions: '7.4'
             db-platforms: Postgre
-            mysql-versions: '5.7'
+            mysql-versions: '8.0'
           # SQLSRV
           - php-versions: '7.4'
             db-platforms: SQLSRV
-            mysql-versions: '5.7'
+            mysql-versions: '8.0'
           # OCI8
           - php-versions: '7.4'
             db-platforms: OCI8
-            mysql-versions: '5.7'
+            mysql-versions: '8.0'
 
     services:
       mysql:
