@@ -66,10 +66,15 @@ jobs:
 
       - name: Install dependencies
         run: |
+          OPTIONS="${{ env.COMPOSER_UPDATE_FLAGS }} --no-progress --no-interaction --prefer-dist --optimize-autoloader"
+          if [[ '${{ matrix.php-versions }}' == '8.4' ]]; then
+            OPTIONS="$OPTIONS --ignore-platform-reqs"
+          fi
+
           if [ -f composer.lock ]; then
-            composer install ${{ env.COMPOSER_UPDATE_FLAGS }} --no-progress --no-interaction --prefer-dist --optimize-autoloader
+            composer install $OPTIONS
           else
-            composer update ${{ env.COMPOSER_UPDATE_FLAGS }} --no-progress --no-interaction --prefer-dist --optimize-autoloader
+            composer update $OPTIONS
           fi
         env:
           COMPOSER_UPDATE_FLAGS: ${{ matrix.dependencies == 'lowest' && '--prefer-lowest' || '' }}
