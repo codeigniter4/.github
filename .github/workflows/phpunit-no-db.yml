@@ -75,7 +75,7 @@ jobs:
           COMPOSER_UPDATE_FLAGS: ${{ matrix.dependencies == 'lowest' && '--prefer-lowest' || '' }}
 
       - name: Test with PHPUnit
-        run: vendor/bin/phpunit --verbose --coverage-text --testsuite main
+        run: vendor/bin/phpunit --coverage-text --testsuite main
         env:
           TERM: xterm-256color
           TACHYCARDIA_MONITOR_GA: enabled
