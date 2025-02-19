@@ -36,8 +36,8 @@ env:
 jobs:
   main:
     name: PHP ${{ matrix.php-versions }} - ${{ matrix.db-platforms }}
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+    runs-on: ubuntu-22.04
+    if: (! contains(github.event.head_commit.message, '[ci skip]'))
     strategy:
       matrix:
         php-versions: ['8.1', '8.2', '8.3']
@@ -83,17 +83,21 @@ jobs:
         options: --health-cmd=pg_isready --health-interval=10s --health-timeout=5s --health-retries=3
 
       mssql:
-        image: mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-20.04
+        image: mcr.microsoft.com/mssql/server:2022-latest
         env:
-          SA_PASSWORD: 1Secure*Password1
+          MSSQL_SA_PASSWORD: 1Secure*Password1
           ACCEPT_EULA: Y
           MSSQL_PID: Developer
         ports:
           - 1433:1433
-        options: --health-cmd="/opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U sa -P 1Secure*Password1 -Q 'SELECT @@VERSION'" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --health-cmd="/opt/mssql-tools18/bin/sqlcmd -C -S 127.0.0.1 -U sa -P 1Secure*Password1 -Q 'SELECT @@VERSION'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
       oracle:
-        image: gvenzl/oracle-xe:18
+        image: gvenzl/oracle-xe:21
         env:
           ORACLE_RANDOM_PASSWORD: true
           APP_USER: ORACLE
