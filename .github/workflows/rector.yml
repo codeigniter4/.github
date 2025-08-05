@@ -18,6 +18,11 @@ on:
       - 'rector.php'
       - '.github/workflows/rector.yml'
   workflow_call:
+    inputs:
+      php-versions:
+        required: false
+        type: string
+        default: '["8.1", "8.4"]'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -34,7 +39,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['8.1', '8.4']
+        php-versions: ${{ fromJson(inputs.php-versions) }}
 
     steps:
       - name: Checkout
