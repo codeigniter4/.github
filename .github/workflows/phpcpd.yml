@@ -23,6 +23,10 @@ on:
         description: Options to phpcpd
         required: false
         type: string
+      php-version:
+        required: false
+        type: string
+        default: '8.1'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -44,7 +48,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: ${{ inputs['php-version'] }}
           tools: phpcpd
           extensions: dom, mbstring
           coverage: none

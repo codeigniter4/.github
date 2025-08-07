@@ -10,6 +10,11 @@ on:
       - 'phpunit*'
       - '.github/workflows/infection.yml'
   workflow_call:
+    inputs:
+      php-version:
+        required: false
+        type: string
+        default: '8.2'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -31,7 +36,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: ${{ inputs['php-version'] }}
           tools: infection, phpunit
           extensions: intl, json, mbstring, gd, xml, sqlite3
           coverage: xdebug

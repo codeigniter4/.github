@@ -18,6 +18,11 @@ on:
       - 'deptrac.yaml'
       - '.github/workflows/deptrac.yml'
   workflow_call:
+    inputs:
+      php-version:
+        required: false
+        type: string
+        default: '8.1'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -39,7 +44,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: ${{ inputs['php-version'] }}
           tools: composer
           extensions: intl, json, mbstring, xml
           coverage: none
