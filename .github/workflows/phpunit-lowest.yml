@@ -19,26 +19,27 @@ on:
       - 'phpunit*'
       - '.github/workflows/phpunit-lowest.yml'
   workflow_call:
-    php-version:
-      required: false
-      type: string
-      default: '8.1'
-    db-platform:
-      required: false
-      type: string
-      default: 'MySQLi'
-    mysql-version:
-      required: false
-      type: string
-      default: '5.7'
-    dependencies:
-      required: false
-      type: string
-      default: 'lowest'
-    coveralls-php:
-      required: false
-      type: string
-      default: '8.1'
+    inputs:
+      php-version:
+        required: false
+        type: string
+        default: '8.1'
+      db-platform:
+        required: false
+        type: string
+        default: 'MySQLi'
+      mysql-version:
+        required: false
+        type: string
+        default: '5.7'
+      dependencies:
+        required: false
+        type: string
+        default: 'lowest'
+      coveralls-php:
+        required: false
+        type: string
+        default: '8.1'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
