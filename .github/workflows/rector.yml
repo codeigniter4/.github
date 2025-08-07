@@ -18,6 +18,11 @@ on:
       - 'rector.php'
       - '.github/workflows/rector.yml'
   workflow_call:
+    inputs:
+      php-version:
+        required: false
+        type: string
+        default: '8.1'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -28,13 +33,9 @@ permissions:
 
 jobs:
   build:
-    name: PHP ${{ matrix.php-versions }} Rector Analysis
+    name: PHP ${{ inputs['php-version'] }} Rector Analysis
     runs-on: ubuntu-latest
     if: (! contains(github.event.head_commit.message, '[ci skip]'))
-    strategy:
-      fail-fast: false
-      matrix:
-        php-versions: ['8.1', '8.4']
 
     steps:
       - name: Checkout
@@ -43,7 +44,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: ${{ inputs['php-version'] }}
           tools: phpstan
           extensions: intl, json, mbstring, xml
           coverage: none

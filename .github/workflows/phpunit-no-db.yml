@@ -19,6 +19,19 @@ on:
       - 'phpunit*'
       - '.github/workflows/phpunit-no-db.yml'
   workflow_call:
+    inputs:
+      php-version:
+        required: false
+        type: string
+        default: '8.1'
+      dependencies:
+        required: false
+        type: string
+        default: 'highest'
+      coveralls-php:
+        required: false
+        type: string
+        default: '8.1'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -29,13 +42,9 @@ permissions:
 
 jobs:
   main:
-    name: PHP ${{ matrix.php-versions }} Unit Tests
+    name: PHP ${{ inputs['php-version'] }} Unit Tests
     runs-on: ubuntu-latest
     if: (! contains(github.event.head_commit.message, '[ci skip]'))
-    strategy:
-      matrix:
-        php-versions: ['8.1', '8.2', '8.3', '8.4']
-        dependencies: ['highest', 'lowest']
 
     steps:
       - name: Check disk space
@@ -47,7 +56,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: ${{ inputs['php-version'] }}
           tools: composer, phive, phpunit
           extensions: intl, json, mbstring, gd, xdebug, xml, sqlite3
           coverage: xdebug
@@ -72,7 +81,7 @@ jobs:
             composer update ${{ env.COMPOSER_UPDATE_FLAGS }} --no-progress --no-interaction --prefer-dist --optimize-autoloader
           fi
         env:
-          COMPOSER_UPDATE_FLAGS: ${{ matrix.dependencies == 'lowest' && '--prefer-lowest' || '' }}
+          COMPOSER_UPDATE_FLAGS: ${{ inputs['dependencies'] == 'lowest' && '--prefer-lowest' || '' }}
 
       - name: Test with PHPUnit
         run: vendor/bin/phpunit --coverage-text --testsuite main
@@ -80,7 +89,7 @@ jobs:
           TERM: xterm-256color
           TACHYCARDIA_MONITOR_GA: enabled
 
-      - if: matrix.php-versions == '8.1'
+      - if: ${{ inputs['php-version'] == inputs['coveralls-php'] }}
         name: Run Coveralls
         continue-on-error: true
         run: |
@@ -89,7 +98,7 @@ jobs:
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_PARALLEL: true
-          COVERALLS_FLAG_NAME: PHP ${{ matrix.php-versions }}
+          COVERALLS_FLAG_NAME: PHP ${{ inputs['php-version'] }}
 
   coveralls:
     needs: [main]
