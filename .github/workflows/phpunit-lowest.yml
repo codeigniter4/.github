@@ -19,6 +19,27 @@ on:
       - 'phpunit*'
       - '.github/workflows/phpunit-lowest.yml'
   workflow_call:
+    inputs:
+      php-version:
+        required: false
+        type: string
+        default: '8.1'
+      db-platform:
+        required: false
+        type: string
+        default: 'MySQLi'
+      mysql-version:
+        required: false
+        type: string
+        default: '5.7'
+      dependencies:
+        required: false
+        type: string
+        default: 'lowest'
+      coveralls-php:
+        required: false
+        type: string
+        default: '8.1'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -29,19 +50,13 @@ permissions:
 
 jobs:
   main:
-    name: PHP ${{ matrix.php-versions }} - ${{ matrix.db-platforms }} - ${{ matrix.dependencies }}
+    name: PHP ${{ inputs['php-version'] }} - ${{ inputs['db-platform'] }} - ${{ inputs['dependencies'] }}
     runs-on: ubuntu-latest
     if: (! contains(github.event.head_commit.message, '[ci skip]'))
-    strategy:
-      matrix:
-        php-versions: ['8.1']
-        db-platforms: ['MySQLi']
-        mysql-versions: ['5.7']
-        dependencies: ['lowest']
 
     services:
       mysql:
-        image: mysql:${{ matrix.mysql-versions }}
+        image: mysql:${{ inputs['mysql-version'] }}
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: test
@@ -59,7 +74,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: ${{ inputs['php-version'] }}
           tools: composer, phive, phpunit
           extensions: intl, json, mbstring, gd, xdebug, xml, sqlite3
           coverage: xdebug
@@ -84,11 +99,11 @@ jobs:
             composer update ${{ env.COMPOSER_UPDATE_FLAGS }} --no-progress --no-interaction --prefer-dist --optimize-autoloader
           fi
         env:
-          COMPOSER_UPDATE_FLAGS: ${{ matrix.dependencies == 'lowest' && '--prefer-lowest' || '' }}
+          COMPOSER_UPDATE_FLAGS: ${{ inputs['dependencies'] == 'lowest' && '--prefer-lowest' || '' }}
 
       - name: Test with PHPUnit
         run: vendor/bin/phpunit --coverage-text --testsuite main
         env:
-          DB: ${{ matrix.db-platforms }}
+          DB: ${{ inputs['db-platform'] }}
           TERM: xterm-256color
           TACHYCARDIA_MONITOR_GA: enabled
