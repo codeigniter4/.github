@@ -5,10 +5,6 @@ on:
       - 'develop'
   workflow_call:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: false
-
 permissions:
   contents: read
   pull-requests: write
