@@ -15,7 +15,7 @@ To customize inputs, you must define them under the `with` section in your workf
 ```yaml
 jobs:
   psalm:
-    uses: codeigniter4/.github/.github/workflows/psalm.yml@CI46
+    uses: codeigniter4/.github/.github/workflows/psalm.yml@CI47
     with:
       php-version: '8.2'
 ```
@@ -30,7 +30,7 @@ jobs:
       matrix:
         php-version: ['8.2', '8.4']
 
-    uses: codeigniter4/.github/.github/workflows/rector.yml@CI46
+    uses: codeigniter4/.github/.github/workflows/rector.yml@CI47
     with:
       php-version: ${{ matrix.php-version }}
 ```
