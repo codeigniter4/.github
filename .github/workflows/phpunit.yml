@@ -77,7 +77,7 @@ jobs:
         options: --health-cmd=pg_isready --health-interval=10s --health-timeout=5s --health-retries=3
 
       mssql:
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        image: mcr.microsoft.com/mssql/server:2025-latest
         env:
           MSSQL_SA_PASSWORD: 1Secure*Password1
           ACCEPT_EULA: Y
